@@ -18,7 +18,6 @@ func DeleteServer(i *discordgo.MessageCreate) {
 	}
 
 	result := DB.First(&guild)
-	guild.DefaultChannel = ""
 
 	for x := range Channels {
 		if Channels[x] == guild.DefaultChannel {
@@ -28,8 +27,10 @@ func DeleteServer(i *discordgo.MessageCreate) {
 
 	}
 	if !errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		guild.DefaultChannel = ""
 		DB.Save(&guild)
 	}
+
 	Done <- true
 	fmt.Println("Server removed")
 }
